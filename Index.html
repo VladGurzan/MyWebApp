@@ -2,14 +2,442 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Моё приложение</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Чистый Блеск | Автомойка — Администратор</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="card">
-        <h1>Привет, я разработчик!</h1>
-        <p>Это моя лабораторная работа по Git и GitHub</p>
-        <button>Нажми на меня</button>
+<div class="dashboard">
+    <!-- Стильная шапка -->
+    <div class="glass-header">
+        <div class="logo-area">
+            <h1>✨ Чистый Блеск <span class="badge-admin">Админ-панель</span></h1>
+            <p>2 бокса · 4 мойщика · Система скидок</p>
+        </div>
+        <div class="stats-group">
+            <div class="stat-chip">📋 Активные: <strong id="totalActiveCount">0</strong></div>
+            <div class="stat-chip">💰 Выручка: <strong id="totalRevenueSpan">0</strong> ₽</div>
+        </div>
     </div>
+
+    <!-- Первый ряд: боксы + запись -->
+    <div class="two-columns">
+        <!-- Левый блок: боксы / мойщики -->
+        <div class="neocard">
+            <div class="card-head">
+                <span>🚘 Боксы (2 бокса × 2 машины)</span>
+                <span>⚡ Состояние</span>
+            </div>
+            <div class="card-body">
+                <div id="boxesDynamic" class="boxes-flex"></div>
+                <div class="workers-wrapper">
+                    <strong>🧽 Мойщики (4 сотрудника)</strong>
+                    <div id="workersDynamic" class="workers-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правый блок: запись клиента -->
+        <div class="neocard">
+            <div class="card-head">
+                <span>📞 Запись клиента</span>
+                <span>🎯 Назначение</span>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <input type="text" id="clientName" class="input-modern" placeholder="Имя клиента" autocomplete="off">
+                    <input type="text" id="clientCar" class="input-modern" placeholder="Автомобиль" autocomplete="off">
+                    <select id="serviceSelect" class="input-modern">
+                        <option value="1500">🚗 Мойка кузова — 1500 ₽</option>
+                        <option value="2500">🧼 Химчистка салона — 2500 ₽</option>
+                        <option value="3500">✨ Комплекс — 3500 ₽</option>
+                        <option value="1800">💨 Экспресс-мойка — 1800 ₽</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="workerAssign" class="input-modern">
+                        <option value="">👨‍🔧 Выберите мойщика</option>
+                    </select>
+                    <select id="boxSlotSelect" class="input-modern">
+                        <option value="">🚙 Бокс и место</option>
+                    </select>
+                    <button id="createOrderBtn" class="btn-glossy">📝 Записать + назначить</button>
+                </div>
+                <div class="appointments-wrapper">
+                    <strong>🗓️ Активные заказы</strong>
+                    <div id="activeAppointmentsList" class="appointments-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Второй ряд: прайс-лист и инфо -->
+    <div class="two-columns">
+        <div class="neocard">
+            <div class="card-head">
+                <span>📋 Прайс-лист (зал ожидания)</span>
+                <span>⭐ Скидки</span>
+            </div>
+            <div class="card-body">
+                <div id="priceListContainer"></div>
+                <div class="discount-modern">
+                    💎 <strong>Постоянным клиентам:</strong> 5% после 3 моек · 15% после 7 моек
+                </div>
+            </div>
+        </div>
+        <div class="neocard">
+            <div class="card-head">
+                <span>🖥️ Система управления</span>
+                <span>🔧 Администратор</span>
+            </div>
+            <div class="card-body">
+                <p>✔️ Запись по телефону / распределение по боксам</p>
+                <p>✔️ 4 мойщика, 2 бокса по 2 машины</p>
+                <p>✔️ Автоматический расчет скидки</p>
+                <button id="resetDataBtn" class="reset-btn">🔄 Сбросить демо-данные</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== МОДЕЛЬ ДАННЫХ ==========
+    let boxes = [
+        [ 
+            { occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null }, 
+            { occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null } 
+        ],
+        [ 
+            { occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null }, 
+            { occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null } 
+        ]
+    ];
+
+    let workers = [
+        { id: 1, name: 'Алексей', busy: false, currentAppointmentId: null },
+        { id: 2, name: 'Дмитрий', busy: false, currentAppointmentId: null },
+        { id: 3, name: 'Игорь', busy: false, currentAppointmentId: null },
+        { id: 4, name: 'Сергей', busy: false, currentAppointmentId: null }
+    ];
+
+    let appointments = [];
+    let clientHistory = new Map();
+    let nextId = 210;
+
+    // Функция получения скидки по истории клиента
+    function getDiscount(clientName) {
+        if (!clientName) return 0;
+        const key = clientName.trim().toLowerCase();
+        const data = clientHistory.get(key);
+        if (!data) return 0;
+        const visits = data.totalVisits;
+        if (visits >= 7) return 15;
+        if (visits >= 3) return 5;
+        return 0;
+    }
+
+    // Добавление визита клиенту
+    function addClientVisit(clientName, finalSpent) {
+        if (!clientName) return;
+        const key = clientName.trim().toLowerCase();
+        const existing = clientHistory.get(key) || { totalVisits: 0, totalSpent: 0 };
+        existing.totalVisits += 1;
+        existing.totalSpent += finalSpent;
+        clientHistory.set(key, existing);
+    }
+
+    // Освобождение ресурсов по заказу
+    function releaseAppointment(appId) {
+        const idx = appointments.findIndex(a => a.id === appId);
+        if (idx === -1) return false;
+        const app = appointments[idx];
+        if (app.status === 'completed') return false;
+        
+        if (app.boxId !== undefined && app.slotIndex !== undefined && boxes[app.boxId]?.[app.slotIndex]) {
+            boxes[app.boxId][app.slotIndex].occupied = false;
+            boxes[app.boxId][app.slotIndex].appointmentId = null;
+            boxes[app.boxId][app.slotIndex].clientName = '';
+            boxes[app.boxId][app.slotIndex].carModel = '';
+            boxes[app.boxId][app.slotIndex].workerId = null;
+        }
+        
+        if (app.workerId) {
+            const w = workers.find(wr => wr.id === app.workerId);
+            if (w) { 
+                w.busy = false; 
+                w.currentAppointmentId = null; 
+            }
+        }
+        
+        app.status = 'completed';
+        renderAll();
+        return true;
+    }
+
+    // Завершение заказа
+    function finishOrder(appId) {
+        const ord = appointments.find(a => a.id === appId);
+        if (!ord || ord.status === 'completed') { 
+            alert("Заказ уже завершён"); 
+            return; 
+        }
+        releaseAppointment(appId);
+        updateStats();
+        renderAll();
+    }
+
+    // Создание нового заказа
+    function addNewOrder(clientName, carModel, serviceElem, workerId, boxSlotKey) {
+        if (!clientName.trim()) { 
+            alert("Введите имя клиента"); 
+            return false; 
+        }
+        if (!carModel.trim()) { 
+            alert("Введите автомобиль"); 
+            return false; 
+        }
+        
+        const price = parseInt(serviceElem.value);
+        const serviceText = serviceElem.options[serviceElem.selectedIndex].text;
+        const worker = workers.find(w => w.id === parseInt(workerId));
+        
+        if (!worker) { 
+            alert("Выберите мойщика"); 
+            return false; 
+        }
+        if (worker.busy) { 
+            alert(`Мойщик ${worker.name} уже занят`); 
+            return false; 
+        }
+        if (!boxSlotKey) { 
+            alert("Выберите бокс и место"); 
+            return false; 
+        }
+        
+        let [boxId, slotId] = boxSlotKey.split('_').map(Number);
+        if (isNaN(boxId) || isNaN(slotId)) { 
+            alert("Ошибка выбора бокса"); 
+            return false; 
+        }
+        if (boxes[boxId][slotId].occupied) { 
+            alert("Место занято! Выберите другое."); 
+            return false; 
+        }
+
+        let disc = getDiscount(clientName);
+        let finalPrice = disc > 0 ? Math.floor(price * (100 - disc) / 100) : price;
+
+        const newApp = {
+            id: nextId++, 
+            clientName: clientName.trim(), 
+            carModel: carModel.trim(),
+            serviceName: serviceText, 
+            servicePrice: price, 
+            workerId: worker.id,
+            boxId, 
+            slotIndex: slotId, 
+            status: 'active', 
+            discountPercent: disc,
+            finalPrice, 
+            createdAt: new Date().toLocaleTimeString()
+        };
+        
+        boxes[boxId][slotId].occupied = true;
+        boxes[boxId][slotId].appointmentId = newApp.id;
+        boxes[boxId][slotId].clientName = clientName.trim();
+        boxes[boxId][slotId].carModel = carModel.trim();
+        boxes[boxId][slotId].workerId = worker.id;
+        
+        worker.busy = true;
+        worker.currentAppointmentId = newApp.id;
+        
+        appointments.push(newApp);
+        addClientVisit(clientName, finalPrice);
+        renderAll();
+        updateStats();
+        return true;
+    }
+
+    // Обновление статистики
+    function updateStats() {
+        const active = appointments.filter(a => a.status === 'active').length;
+        const revenue = appointments.filter(a => a.status === 'completed').reduce((s, a) => s + a.finalPrice, 0);
+        document.getElementById('totalActiveCount').innerText = active;
+        document.getElementById('totalRevenueSpan').innerText = revenue;
+    }
+
+    // ========== ОТРИСОВКА ИНТЕРФЕЙСА ==========
+    
+    function renderBoxes() {
+        const container = document.getElementById('boxesDynamic');
+        container.innerHTML = '';
+        for (let b = 0; b < boxes.length; b++) {
+            const boxDiv = document.createElement('div');
+            boxDiv.className = 'box-card';
+            boxDiv.innerHTML = `<div class="box-title">🧼 Бокс ${b+1}</div>`;
+            for (let s = 0; s < boxes[b].length; s++) {
+                const slot = boxes[b][s];
+                if (slot.occupied) {
+                    const ww = workers.find(w => w.id === slot.workerId);
+                    boxDiv.innerHTML += `
+                        <div class="slot-modern">
+                            <div>
+                                <strong>🚘 Место ${s+1}</strong><br>
+                                ${slot.clientName}<br>
+                                ${slot.carModel}<br>
+                                🧽 мойщик: ${ww?.name || '—'}
+                            </div>
+                            <span class="occupied-tag">занято</span>
+                        </div>
+                    `;
+                } else {
+                    boxDiv.innerHTML += `<div class="slot-modern empty">📍 Место ${s+1} — свободно</div>`;
+                }
+            }
+            container.appendChild(boxDiv);
+        }
+    }
+
+    function renderWorkers() {
+        const container = document.getElementById('workersDynamic');
+        container.innerHTML = '';
+        workers.forEach(w => {
+            container.innerHTML += `
+                <div class="worker-chip">
+                    <strong>${w.name}</strong> 
+                    <span class="${w.busy ? 'busy' : 'free'}">${w.busy ? '🔴 занят' : '🟢 свободен'}</span>
+                </div>
+            `;
+        });
+    }
+
+    function renderPriceList() {
+        const services = [
+            { name: "Мойка кузова", price: 1500 },
+            { name: "Химчистка салона", price: 2500 },
+            { name: "Комплекс", price: 3500 },
+            { name: "Экспресс-мойка", price: 1800 },
+            { name: "Полировка", price: 2200 },
+            { name: "Чернение шин", price: 500 }
+        ];
+        const container = document.getElementById('priceListContainer');
+        container.innerHTML = services.map(s => `
+            <div class="price-row">
+                <span>${s.name}</span>
+                <strong>${s.price} ₽</strong>
+            </div>
+        `).join('');
+    }
+
+    function renderActiveOrders() {
+        const container = document.getElementById('activeAppointmentsList');
+        const active = appointments.filter(a => a.status === 'active');
+        
+        if (active.length === 0) { 
+            container.innerHTML = '<div class="empty-state">✨ Нет активных заказов</div>'; 
+            return; 
+        }
+        
+        container.innerHTML = '';
+        active.forEach(app => {
+            const ww = workers.find(w => w.id === app.workerId);
+            const orderDiv = document.createElement('div');
+            orderDiv.className = 'order-card';
+            orderDiv.innerHTML = `
+                <div class="order-info">
+                    <strong>${app.clientName}</strong> (${app.carModel})<br>
+                    📋 ${app.serviceName} | 🧼 ${ww?.name} | бокс ${app.boxId+1}/${app.slotIndex+1}<br>
+                    💰 ${app.servicePrice} ₽ → скидка ${app.discountPercent}% → <b>${app.finalPrice} ₽</b>  🕒 ${app.createdAt}
+                </div>
+                <button class="complete-glossy" data-id="${app.id}">✅ Завершить</button>
+            `;
+            container.appendChild(orderDiv);
+            orderDiv.querySelector('.complete-glossy').addEventListener('click', () => finishOrder(app.id));
+        });
+    }
+
+    function renderSelectors() {
+        const boxSelect = document.getElementById('boxSlotSelect');
+        boxSelect.innerHTML = '<option value="">🚙 Выберите бокс и место</option>';
+        for (let b = 0; b < boxes.length; b++) {
+            for (let s = 0; s < boxes[b].length; s++) {
+                const occ = boxes[b][s].occupied;
+                boxSelect.innerHTML += `<option value="${b}_${s}" ${occ ? 'disabled' : ''}>Бокс ${b+1}, место ${s+1} — ${occ ? '🔴 занято' : '🟢 свободно'}</option>`;
+            }
+        }
+        
+        const workerSelect = document.getElementById('workerAssign');
+        workerSelect.innerHTML = '<option value="">👨‍🔧 Выберите мойщика</option>';
+        workers.forEach(w => {
+            workerSelect.innerHTML += `<option value="${w.id}" ${w.busy ? 'disabled' : ''}>${w.name} ${w.busy ? '(занят)' : 'свободен'}</option>`;
+        });
+    }
+
+    function renderAll() { 
+        renderBoxes(); 
+        renderWorkers(); 
+        renderPriceList(); 
+        renderActiveOrders(); 
+        renderSelectors(); 
+        updateStats(); 
+    }
+
+    // Сброс демо-данных
+    function resetDemo() {
+        boxes = [
+            [{ occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null }, { occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null }],
+            [{ occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null }, { occupied: false, appointmentId: null, clientName: '', carModel: '', workerId: null }]
+        ];
+        
+        workers = [
+            { id: 1, name: 'Алексей', busy: false, currentAppointmentId: null },
+            { id: 2, name: 'Дмитрий', busy: false, currentAppointmentId: null },
+            { id: 3, name: 'Игорь', busy: false, currentAppointmentId: null },
+            { id: 4, name: 'Сергей', busy: false, currentAppointmentId: null }
+        ];
+        
+        appointments = [];
+        clientHistory.clear();
+        nextId = 300;
+        
+        const serviceEl = document.getElementById('serviceSelect');
+        if (serviceEl) {
+            addNewOrder("Иван Демо", "BMW X5", serviceEl, "1", "0_0");
+            addNewOrder("Елена Скидка", "Kia Sportage", serviceEl, "2", "1_1");
+            clientHistory.set("елена скидка", { totalVisits: 5, totalSpent: 9500 });
+        }
+        renderAll();
+    }
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    document.addEventListener('DOMContentLoaded', () => {
+        renderAll();
+        if (appointments.length === 0) resetDemo();
+        
+        document.getElementById('createOrderBtn').addEventListener('click', () => {
+            const name = document.getElementById('clientName').value;
+            const car = document.getElementById('clientCar').value;
+            const serv = document.getElementById('serviceSelect');
+            const wid = document.getElementById('workerAssign').value;
+            const slotKey = document.getElementById('boxSlotSelect').value;
+            
+            if (!wid || !slotKey) { 
+                alert("Назначьте мойщика и бокс/место"); 
+                return; 
+            }
+            
+            addNewOrder(name, car, serv, parseInt(wid), slotKey);
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientCar').value = '';
+        });
+        
+        document.getElementById('resetDataBtn').addEventListener('click', () => { 
+            if (confirm("Сбросить все данные?")) resetDemo(); 
+        });
+    });
+</script>
 </body>
 </html>

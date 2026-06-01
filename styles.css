@@ -1,0 +1,383 @@
+/* ========== ОСНОВНЫЕ СТИЛИ ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    /* ФИОЛЕТОВЫЙ ГРАДИЕНТ */
+    background: radial-gradient(circle at 10% 30%, #1a0b2e 0%, #2d1b4e 50%, #1e1035 100%);
+    min-height: 100vh;
+    padding: 32px 28px;
+    color: #f0eaff;
+}
+
+/* ГЛАВНЫЙ КОНТЕЙНЕР */
+.dashboard {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* ========== СТЕКЛЯННАЯ ШАПКА (фиолетовая) ========== */
+.glass-header {
+    background: rgba(75, 45, 120, 0.45);
+    backdrop-filter: blur(16px);
+    border-radius: 48px;
+    padding: 20px 32px;
+    margin-bottom: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(200, 160, 255, 0.2);
+    border: 1px solid rgba(170, 120, 255, 0.4);
+}
+
+.logo-area h1 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d4b0ff, #a87cff, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-area p {
+    color: #cbb8ff;
+    margin-top: 5px;
+}
+
+.badge-admin {
+    background: linear-gradient(105deg, #8b5cf6, #6d28d9);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 60px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.stats-group {
+    display: flex;
+    gap: 24px;
+}
+
+.stat-chip {
+    background: rgba(100, 60, 160, 0.5);
+    backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    border-radius: 60px;
+    font-weight: 600;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    border: 1px solid rgba(180, 130, 255, 0.3);
+    color: #f3e8ff;
+}
+
+/* ========== СЕТКА ========== */
+.two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-bottom: 32px;
+}
+
+/* ========== НЕОМОРФНЫЕ КАРТОЧКИ (фиолетовая тема) ========== */
+.neocard {
+    background: rgba(45, 25, 80, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 40px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(160, 110, 240, 0.3);
+    border: 1px solid rgba(160, 110, 255, 0.2);
+}
+
+.neocard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 40px -16px rgba(0, 0, 0, 0.5);
+    background: rgba(55, 32, 100, 0.85);
+}
+
+.card-head {
+    background: linear-gradient(98deg, #5b3ea8, #432e7a);
+    padding: 20px 28px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(200, 170, 255, 0.3);
+}
+
+.card-body {
+    padding: 24px 28px;
+}
+
+/* ========== БОКСЫ ========== */
+.boxes-flex {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.box-card {
+    flex: 1;
+    background: rgba(35, 20, 65, 0.7);
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(150, 100, 230, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+.box-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: #d9c6ff;
+    display: flex;
+    gap: 8px;
+}
+
+.slot-modern {
+    background: rgba(55, 35, 95, 0.7);
+    border-radius: 20px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(170, 120, 255, 0.3);
+    color: #f0e6ff;
+}
+
+.slot-modern.empty {
+    background: rgba(45, 28, 80, 0.6);
+    justify-content: center;
+    color: #c9adff;
+    font-weight: 500;
+}
+
+.occupied-tag {
+    background: linear-gradient(105deg, #9b6dff, #7c3aed);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 80px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* ========== МОЙЩИКИ ========== */
+.workers-wrapper {
+    margin-top: 28px;
+    background: rgba(55, 35, 95, 0.5);
+    border-radius: 32px;
+    padding: 16px;
+}
+
+.workers-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.worker-chip {
+    background: rgba(65, 40, 110, 0.7);
+    border-radius: 80px;
+    padding: 8px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    border: 1px solid rgba(180, 130, 255, 0.4);
+}
+
+.free {
+    color: #b794f4;
+    font-weight: bold;
+}
+
+.busy {
+    color: #f0a3b0;
+}
+
+/* ========== ФОРМА ========== */
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.input-modern {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 60px;
+    border: 1.5px solid #7c5acd;
+    background: rgba(30, 15, 55, 0.8);
+    font-size: 0.9rem;
+    color: #f0e6ff;
+    transition: 0.2s;
+}
+
+.input-modern::placeholder {
+    color: #a38fd6;
+}
+
+.input-modern:focus {
+    border-color: #b77cff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(160, 100, 255, 0.4);
+    background: rgba(40, 20, 70, 0.9);
+}
+
+select.input-modern option {
+    background: #2d1b4e;
+    color: #f0e6ff;
+}
+
+.btn-glossy {
+    background: linear-gradient(120deg, #8b5cf6, #6d28d9);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 60px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(100, 50, 200, 0.3);
+}
+
+.btn-glossy:hover {
+    transform: scale(0.97);
+    background: linear-gradient(120deg, #7c3aed, #5b21b6);
+}
+
+/* ========== ЗАКАЗЫ ========== */
+.appointments-wrapper {
+    margin-top: 20px;
+    background: rgba(45, 25, 80, 0.5);
+    border-radius: 28px;
+    padding: 16px;
+}
+
+.appointments-list {
+    max-height: 280px;
+    overflow-y: auto;
+    margin-top: 14px;
+}
+
+.order-card {
+    background: rgba(50, 30, 95, 0.7);
+    backdrop-filter: blur(4px);
+    border-radius: 28px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(160, 110, 255, 0.4);
+}
+
+.order-info {
+    flex: 2;
+}
+
+.complete-glossy {
+    background: #5b3ea8;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.complete-glossy:hover {
+    background: #7c3aed;
+}
+
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    color: #a38fd6;
+}
+
+/* ========== ПРАЙС-ЛИСТ ========== */
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(150, 100, 230, 0.4);
+    font-weight: 500;
+}
+
+.discount-modern {
+    background: rgba(75, 45, 130, 0.5);
+    border-radius: 28px;
+    padding: 18px;
+    margin-top: 20px;
+    border: 1px solid rgba(170, 120, 255, 0.4);
+}
+
+/* ========== КНОПКА СБРОСА ========== */
+.reset-btn {
+    background: rgba(65, 40, 110, 0.7);
+    border: 1px solid #8b5cf6;
+    color: #d9c6ff;
+    padding: 10px 22px;
+    border-radius: 60px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.reset-btn:hover {
+    background: #5b3ea8;
+    color: white;
+}
+
+/* ========== АНИМАЦИЯ ========== */
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.neocard {
+    animation: fadeSlide 0.5s ease-out;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 880px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .glass-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    body {
+        padding: 20px 16px;
+    }
+}
